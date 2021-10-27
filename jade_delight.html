@@ -180,14 +180,11 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 			c += "Your order will be ready to eat at " + hrs + ":" + mins;
 			c += "\nYour total is: " + grandTotal;
 
+			sessionStorage.setItem("order", c);
 			return c;
+
 	}
 
-	function calcTotal(){
-		for(i=0; i<5; i++){
-			
-		}
-	}
 </script>
 
 
