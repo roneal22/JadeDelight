@@ -37,12 +37,12 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 
 <h1>Jade Delight</h1>
 <form>
-
 <p>First Name: <input type="text"  name='fname' /></p>
 <p>Last Name*:  <input type="text"  name='lname' /></p>
-<p>Street: <input type="text"  name='street' /></p>
-<p>City: <input type="text"  name='city' /></p>
+<p>Street*: <input type="text"  name='street' /></p>
+<p>City*: <input type="text"  name='city' /></p>
 <p>Phone*: <input type="text"  name='phone' /></p>
+<p style="font-size: 12px"> * indicates a required field</p>
 <p> 
 	<input type="radio"  name="p_or_d" value = "pickup" checked="checked"/>Pickup  
 	<input type="radio"  name='p_or_d' value = 'delivery'/>
@@ -55,9 +55,16 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
     <th>Cost Each</th>
     <th>Total Cost</th>
   </tr>
+
 <script language="javascript">
 	$(":text[name=street]").hide();
 	$(":text[name=city]").hide();
+	street=$("p")[2];
+	city = $("p")[3];
+	$(street).toggle();
+	$(city).toggle();
+
+	selections = [0,0,0,0,0];
 	var valName = false;
 	var valPhone = false;
 	var valDeliv = true;
@@ -66,6 +73,10 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 	var dt;
 	var hrs;
 	var mins = 15;
+
+	var subTotal = 0;
+	var tax = 0;
+	var grandTotal = 0;
 
   var s = "";
   for (i=0; i< menuItems.length; i++)
@@ -79,10 +90,31 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
   document.writeln(s);
 
 	 $(document).ready(function() {
+
 	 	//update cost
-	 	alert($("p")[2,3].html());
 	 	$("select").change(function(){
-	 		alert(this.selectedIndex);
+	 		//alert(this.selectedIndex);
+	 		var itemTotal = 0;
+	 		numItems = 0;
+	 		selections = [0,0,0,0,0];
+
+	 		for(i=0; i<5; i++){
+	 			itemTotal = 0;
+	 			selections[i] = $("select[name='quan"+i+"']").find(":selected").text();
+	 			numItems += parseInt(selections[i]);
+	 			if (selections[i] > 0){
+	 				itemTotal = (selections[i]*menuItems[i].cost).toFixed(2);
+	 				subTotal = (parseFloat(subTotal) + parseFloat(itemTotal)).toFixed(2);
+	 				document.getElementsByName('cost')[i].value = itemTotal;
+	 			}
+	 		}
+
+	 		document.getElementById('subtotal').value = subTotal;
+	 		tax = (subTotal*.0625).toFixed(2);
+	 		document.getElementById('tax').value = tax;
+	 		grandTotal = (parseFloat(subTotal) + parseFloat(tax)).toFixed(2);
+	 		document.getElementById('total').value = grandTotal;
+
 	 	})
 	 	//set p or d
 	 	 $(":radio").change(function() {
@@ -91,11 +123,15 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 	 	 	if(orderType == 'delivery'){
 	 	 		$(":text[name=street]").show();
 	 	 		$(":text[name=city]").show();
+	 	 		$(street).toggle();
+				$(city).toggle();
 	 	 		valDeliv = false;
 	 	 	}
 	 	 	else{
 	 	 		$(":text[name=street]").hide();
 	 	 		$(":text[name=city]").hide();
+	 	 		$(street).toggle();
+				$(city).toggle();
 	 	 		valDeliv = true;
 	 	 	}
 	 	 })
@@ -118,9 +154,9 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 			}
 
 
-		// if (valName && valPhone && valDeliv && numItems > 0){
-		// alert(orderConfirm());
-		// }
+		if (valName && valPhone && valDeliv && numItems > 0){
+		alert(orderConfirm());
+		}
 
 		});
 	})
@@ -136,13 +172,13 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 		}
 			var c = "Thank you for your business! \n";
 			c += "Your order includes: \n";
-			// c += num1 + " \n";
-			// c += num2 + " \n";
-			// c += num3 + " \n";
-			// c += num4 + " \n";
-			// c += num5 + " \n";
+			for(i=0; i<5; i++){
+				if(selections[i] != 0){
+					c += selections[i] + " " + menuItems[i].name + "\n";
+				}
+			}
 			c += "Your order will be ready to eat at " + hrs + ":" + mins;
-			c += "\nyour total is: "
+			c += "\nYour total is: " + grandTotal;
 
 			return c;
 	}
