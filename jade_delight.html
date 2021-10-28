@@ -57,6 +57,7 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
   </tr>
 
 <script language="javascript">
+
 	$(":text[name=street]").hide();
 	$(":text[name=city]").hide();
 	street=$("p")[2];
@@ -155,8 +156,7 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 
 
 		if (valName && valPhone && valDeliv && numItems > 0){
-		orderConfirm();
-		window.open("https://roneal22.github.io/JadeDelight/order.html");
+		alert(orderConfirm());
 		}
 
 		});
@@ -180,8 +180,6 @@ function makeSelect(name, minRange, maxRange) //format for menu quantity selecti
 			}
 			c += "Your order will be ready to eat at " + hrs + ":" + mins;
 			c += "\nYour total is: " + grandTotal;
-
-			sessionStorage.setItem("order", c);
 			return c;
 
 	}
